@@ -674,7 +674,7 @@ namespace Pavlo.FOLSupervisionBoard
         }
 
         /// <summary>
-        /// set rx to low/normal power mode 
+        /// set rx/tx to low/normal power mode 
         /// </summary>
         /// <param name="isRX">true - for RX, false - TX</param>
         /// <param name="isLowPowerMode">true - low power mode, false - normal power mode</param>
