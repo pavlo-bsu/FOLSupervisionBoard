@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pavlo.FOLSupervisionBoard"
         mc:Ignorable="d"
-        Title="FOL Supervision Board" MinHeight="100" MinWidth="300" SizeToContent="WidthAndHeight">
+        Title="FOL Supervision Board" MinHeight="450" MinWidth="450" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <local:Viewmodel/>
     </Window.DataContext>
@@ -14,7 +14,7 @@
             <StackPanel Name="stcPanNewActions" Orientation="Horizontal" Width="Auto" Style="{StaticResource stcPanComboBoxWithDescription}">
                 <TextBlock Text="COM port" VerticalAlignment="Center"/>
                 <ComboBox Style="{StaticResource cmbBoxItems}" Name="cbxNewActions" ItemsSource="{Binding Path=AvaliableCOMports}"
-                    SelectedIndex="{Binding Path=AvaliableCOMportsSelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    SelectedIndex="{Binding Path=AvaliableCOMportsSelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=10}"
                     IsEnabled="{Binding Path=CanCOMportBeSelected, Mode=OneWay}">
                 </ComboBox>
             </StackPanel>
@@ -100,7 +100,7 @@
                               IsEnabled="{Binding Path=CanTestGeneratorBeSwitched, Mode=OneWay}">
                 </ToggleButton>
                 <ToggleButton x:Name="standbyBtn" Content="Standby" Grid.Row="3" Grid.Column="0"
-                              IsChecked="{Binding Path=IsUnitsOnLowpowerMode, Mode=TwoWay}"
+                              IsChecked="{Binding Path=AreUnitsOnLowpowerMode, Mode=TwoWay}"
                               IsEnabled="{Binding Path=CanLowpowerModeOfUnitsBeSwitched, Mode=OneWay}">
                     
                 </ToggleButton>
