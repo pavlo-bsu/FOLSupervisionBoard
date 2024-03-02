@@ -42,7 +42,7 @@ namespace Pavlo.FOLSupervisionBoard.Viemodel
             }
             else
             {
-                if (vm.AvaliableCOMportsSelectedIndex >= 0 && !vm.IsResposeAwaiting && !vm.IsTestGenerOn && !vm.IsUnitsOnLowpowerMode)
+                if (vm.AvaliableCOMportsSelectedIndex >= 0 && !vm.IsResposeAwaiting && !vm.IsTestGenerOn && !vm.AreUnitsOnLowpowerMode)
                     return true;
                 else
                     return false;
