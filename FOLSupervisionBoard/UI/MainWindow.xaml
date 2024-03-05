@@ -4,12 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pavlo.FOLSupervisionBoard"
+        xmlns:conv="clr-namespace:Pavlo.MyHelpers.Converters;assembly=MyHelpers"
         mc:Ignorable="d"
         Title="FOL Supervision Board" MinHeight="450" MinWidth="450" SizeToContent="WidthAndHeight">
     <Window.DataContext>
         <local:Viewmodel/>
     </Window.DataContext>
+    <Window.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </Window.Resources>
     <DockPanel LastChildFill="True"  Grid.IsSharedSizeScope="True">
+        <StatusBar DockPanel.Dock="Bottom" >
+            <StackPanel Style="{StaticResource stcPanStatusbar}" Visibility="{Binding Path=IsResposeAwaiting, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Label Name="lblStatus" Content="Respose from Fiber optic link is awaiting"></Label>
+                <ProgressBar Style="{StaticResource prgbarActionExecuting}"></ProgressBar>
+            </StackPanel>
+        </StatusBar>
         <StackPanel Name="stcPanMainContent"  Orientation="Vertical" Width="Auto">
             <StackPanel Name="stcPanNewActions" Orientation="Horizontal" Width="Auto" Style="{StaticResource stcPanComboBoxWithDescription}">
                 <TextBlock Text="COM port" VerticalAlignment="Center"/>
