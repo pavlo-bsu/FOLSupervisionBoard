@@ -777,6 +777,7 @@ namespace Pavlo.FOLSupervisionBoard
                             null
                             );
                     
+                    bool error=false;
                     try
                     {
                         if (value != -1)
@@ -786,7 +787,8 @@ namespace Pavlo.FOLSupervisionBoard
                     }
                     catch (Exception e)
                     {
-                        string msg = e.Message;
+                        error = true;
+                        string msg = $"Error was occurred during the operation:\r\n{e.Message}\r\n---\r\nFiber optic link will be reset!\r\n";
                         MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                     finally
@@ -799,6 +801,9 @@ namespace Pavlo.FOLSupervisionBoard
                                 DispatcherPriority.ContextIdle,
                                 null
                                 );
+                        
+                        if (error)
+                            Reset();//Fiber optic link should be reset!
                     }
                 });
             }
@@ -821,8 +826,11 @@ namespace Pavlo.FOLSupervisionBoard
             }
             catch (Exception e)
             {
-                string msg = e.Message;
-                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                string msg = $"It looks like something went wrong during the reset.\r\nError: {e.Message}\r\n---\r\nCheck all connections and do hard reset of RX and TX.";
+                Task.Run(() =>
+                {
+                    MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                });
             }
             finally
             {
@@ -918,13 +926,15 @@ namespace Pavlo.FOLSupervisionBoard
                     //run task to release UI (thus there is no Wait() for the task)
                     Task.Run(async () =>
                     {
+                        bool error=false;
                         try
                         {
                             await SetTestGenerator(value);
                         }
                         catch (Exception e)
                         {
-                            string msg = e.Message;
+                            error = true;
+                            string msg = $"Error was occurred during the operation:\r\n{e.Message}\r\n---\r\nFiber optic link will be reset!\r\n";
                             MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                         finally
@@ -937,6 +947,9 @@ namespace Pavlo.FOLSupervisionBoard
                                DispatcherPriority.ContextIdle,
                                null
                                );
+
+                            if (error)
+                                Reset();//Fiber optic link should be reset!
                         }
                     });
                 }
@@ -1001,13 +1014,15 @@ namespace Pavlo.FOLSupervisionBoard
                     //run task to release UI (thus there is no Wait() for the task)
                     Task.Run(async () =>
                     {
+                        bool error=false;
                         try
                         {
                             await SetUnitsToLowpowerMode(value);
                         }
                         catch (Exception e)
                         {
-                            string msg = e.Message;
+                            error = true;
+                            string msg = $"Error was occurred during the operation:\r\n{e.Message}\r\n---\r\nFiber optic link will be reset!\r\n";
                             MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                         }
                         finally
@@ -1020,6 +1035,9 @@ namespace Pavlo.FOLSupervisionBoard
                                DispatcherPriority.ContextIdle,
                                null
                                );
+
+                            if (error)
+                                Reset();//Fiber optic link should be reset!
                         }
                     });
                 }
