@@ -106,7 +106,7 @@
                               IsChecked="{Binding Path=IsTestGenerOn, Mode=TwoWay}"
                               IsEnabled="{Binding Path=CanTestGeneratorBeSwitched, Mode=OneWay}">
                 </ToggleButton>
-                <ToggleButton x:Name="standbyBtn" Content="Standby" Grid.Row="3" Grid.Column="0"
+                <ToggleButton x:Name="standbyBtn" Content="Low power mode" Grid.Row="3" Grid.Column="0"
                               IsChecked="{Binding Path=AreUnitsOnLowpowerMode, Mode=TwoWay}"
                               IsEnabled="{Binding Path=CanLowpowerModeOfUnitsBeSwitched, Mode=OneWay}">
                     
