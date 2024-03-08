@@ -7,9 +7,6 @@
         xmlns:conv="clr-namespace:Pavlo.MyHelpers.Converters;assembly=MyHelpers"
         mc:Ignorable="d"
         Title="FOL Supervision Board" MinHeight="450" MinWidth="450" SizeToContent="WidthAndHeight">
-    <Window.DataContext>
-        <local:Viewmodel/>
-    </Window.DataContext>
     <Window.Resources>
         <conv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>

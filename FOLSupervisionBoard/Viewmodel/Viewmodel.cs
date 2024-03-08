@@ -725,6 +725,17 @@ namespace Pavlo.FOLSupervisionBoard
             }
         }
 
+        /// <summary>
+        /// Do the work during window closing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void Window_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            //Dispose connection to the device
+            TheMOT2000T?.Dispose();
+        }
+
         #region gain
         private ObservableCollection<string> _GainsList = new ObservableCollection<string>();
         /// <summary>
