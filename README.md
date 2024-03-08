@@ -10,6 +10,11 @@ App allows to:
 * Switch `test signal generator` on / off.
 * `Reset` fibre optic link.
 
+As an example, UML sequence diagram presented in the Figure below shows the setting gain (signal attenuation).
+
+![Figure 1]( https://raw.githubusercontent.com/pavlo-bsu/FOLSupervisionBoard/backmatter/img/umlSeqSetGain.png)
+
+
 ## Why some data is updated manually (not automatically by timer, event, etc.)
 Update of optical link level, ID and battery voltage of Receiver and Transmitter modules are performed at the user’s command. The same for search of new connected units. These are not done automatically in order to avoid possible loss of the useful physical signal that is currently being transmitted over the fiber: __according to device user manual, disturbance on the analogue link for a few seconds can appear__ while Transmitter and Receiver exchange commands.
 
