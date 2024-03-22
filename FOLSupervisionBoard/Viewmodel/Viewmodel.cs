@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Metrics;
 using System.IO.Ports;
 using System.Linq;
+using System.Security.Cryptography.Pkcs;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -287,9 +290,11 @@ namespace Pavlo.FOLSupervisionBoard
         /// Request TX Identity
         /// </summary>
         /// <param name="handleException">handle exception, i.e. show message</param>
-        /// <returns></returns>
-        public async Task RequestTXIdentity(bool handleException)
+        /// <returns>true if TX was connected first time (i.e. new TX identity after not connected TX state)</returns>
+        public async Task<bool> RequestTXIdentity(bool handleException)
         {
+            bool isTXfirstTimeConnected = false;
+
             await Application.Current.Dispatcher.BeginInvoke(
                             new Action(() =>
                             {
@@ -303,6 +308,13 @@ namespace Pavlo.FOLSupervisionBoard
                 Task<string> t = TheMOT2000T.RequestTXIdentity();
                 await t;
                 var ts = t.Result;
+
+                if (TXsn == MOT2000T.defaultName && ts != MOT2000T.defaultName)
+                {//TX was connected first time(i.e. new TX identity after not connected TX state)
+                    isTXfirstTimeConnected = true;
+                }
+
+                //set new value
                 await Application.Current.Dispatcher.BeginInvoke(
                            new Action(() =>
                            {
@@ -335,6 +347,7 @@ namespace Pavlo.FOLSupervisionBoard
                            null
                            );
             }
+            return isTXfirstTimeConnected;
         }
 
         
@@ -702,7 +715,7 @@ namespace Pavlo.FOLSupervisionBoard
                 //firstly reset to default values
                 await ResetRX_TX_toDefaultValues();
 
-                //for transmitter
+                //for receiver
                 var t1 = RequestRXIdentity(false);
                 await t1;
                 var t2 = RequestRXBatteryVoltage(false);
@@ -711,6 +724,11 @@ namespace Pavlo.FOLSupervisionBoard
                 //for transmitter
                 var t3 = RequestTXIdentity(false);
                 await t3;
+                if (t3.Result==true)
+                {//i.e. TX was connected first time (new TX identity after state "TX not connected")
+                    var tRequestAttTask = RequestGain();
+                    await tRequestAttTask;
+                }
                 var t4 = RequestTXBatteryVoltage(false);
                 await t4;
 
@@ -821,6 +839,60 @@ namespace Pavlo.FOLSupervisionBoard
             get
             {
                 return _GainsListSelectedIndex;
+            }
+        }
+
+        /// <summary>
+        /// Request gain (attenuation)
+        /// </summary>
+        /// <returns></returns>
+        public async Task RequestGain()
+        {
+            await Application.Current.Dispatcher.BeginInvoke(
+                            new Action(() =>
+                            {
+                                IsResposeAwaiting = true;
+                            }),
+                            DispatcherPriority.ContextIdle,
+                            null
+                            );
+            bool error = false;
+            try
+            {
+                Task<double> t = TheMOT2000T.RequestAllSetup();
+                await t;
+                var gain = t.Result;
+                //index of gain in the GainsList
+                var gainIndex = GainsList.IndexOf(gain.ToString("F2"));
+                await Application.Current.Dispatcher.BeginInvoke(
+                            new Action(() =>
+                            {
+                                this._GainsListSelectedIndex = gainIndex;
+                                NotifyPropertyChanged(nameof(GainsListSelectedIndex));
+                            }),
+                            DispatcherPriority.ContextIdle,
+                            null
+                            );
+            }
+            catch (Exception e)
+            {
+                error = true;
+                string msg = $"Error was occurred during the operation:\r\n{e.Message}\r\n---\r\nFiber optic link will be reset!\r\n";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                await Application.Current.Dispatcher.BeginInvoke(
+                            new Action(() =>
+                            {
+                                IsResposeAwaiting = false;
+
+                            }),
+                            DispatcherPriority.ContextIdle,
+                            null
+                            );
+                if (error)
+                    Reset();//Fiber optic link should be reset!
             }
         }
         #endregion
