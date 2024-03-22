@@ -795,6 +795,76 @@ namespace Pavlo.FOLSupervisionBoard
                 TheSerialPort.DataReceived -= handler;
             }
         }
+
+        /// <summary>
+        /// request "all" device settings (rise command ":ALL?")
+        /// </summary>
+        /// <returns>attenuation(gain)</returns>
+        public async Task<double> RequestAllSetup()
+        {
+            TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
+
+            //check presets
+            if (TheSerialPort == null || !IsConnectionEstableshed)
+            {
+                tcs.SetException(new NullReferenceException("The serial port is not ready!"));
+                await tcs.Task;
+                //return await tcs.Task;  <- code will never reach "return" because the exception will rise before
+            }
+
+            //for cancellation of the Task after timeout
+            CancellationTokenSource ct = new CancellationTokenSource();
+            ct.CancelAfter(this.TimeOut);
+
+            //handler for the device response
+            SerialDataReceivedEventHandler handler = (object sender, SerialDataReceivedEventArgs e) =>
+            {
+                Thread.Sleep(2*SleepTime);
+                string str = string.Empty;
+                if (TheSerialPort.BytesToRead > 0)
+                    str = TheSerialPort.ReadExisting();
+
+                if (str.StartsWith(this.BadResponce))
+                {
+                    tcs.SetException(new Exception("Device is not rensponding properly!"));
+                }
+                else
+                {
+                    //start parsing response
+                    string[] strs = str.Split(',');
+
+                    if (strs.Length != 7)//i.e. unexpected responce
+                        tcs.SetException(new Exception("Wrong interpretation of device response! Logic should be revised!"));
+
+                    if (strs[3] != "1" || strs[4] != "0" || strs[5] != "0")//i.e. if input relay is open, preampl or -31dB power attenuator is switched on
+                        tcs.SetException(new Exception("The application does not support current settings of fiber-optics module!"));
+
+                    //internal representation of attenuation
+                    var attValInternal = int.Parse(strs[2]);
+                    //attenuation
+                    var attVal = Math.Round((double)attValInternal / 10 * 4, MidpointRounding.ToEven) / 4;
+
+                    tcs.SetResult(attVal);
+                }
+            };
+
+            //subscribe to device responce
+            TheSerialPort.DataReceived += handler;
+
+            try
+            {
+                using (ct.Token.Register(() => tcs.SetCanceled(), false))//for cancellation
+                {
+                    TheSerialPort.WriteLine(":ALL?");
+                    return await tcs.Task;
+                }
+            }
+            finally
+            {
+                //unsubscribe
+                TheSerialPort.DataReceived -= handler;
+            }
+        }
         #endregion
     }
 }
