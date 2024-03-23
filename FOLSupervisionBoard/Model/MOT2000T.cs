@@ -259,7 +259,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// request RX Identity (RXsn)
         /// </summary>
         /// <returns>RX Identity (RXsn)</returns>
-        public async Task<string> RequestRXIdentity()
+        public async Task<string> RequestRXIdentityAsync()
         {
             TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
             
@@ -317,7 +317,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// request RX battery voltage
         /// </summary>
         /// <returns>RX battery voltage</returns>
-        public async Task<double> RequestRXBatteryVoltage()
+        public async Task<double> RequestRXBatteryVoltageAsync()
         {
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
 
@@ -382,7 +382,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// request TX Identity (TXsn)
         /// </summary>
         /// <returns>TX Identity (TXsn)</returns>
-        public async Task<string> RequestTXIdentity()
+        public async Task<string> RequestTXIdentityAsync()
         {
             TaskCompletionSource<string> tcs = new TaskCompletionSource<string>();
 
@@ -438,7 +438,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// request TX battery voltage
         /// </summary>
         /// <returns>TX battery voltage</returns>
-        public async Task<double> RequestTXBatteryVoltage()
+        public async Task<double> RequestTXBatteryVoltageAsync()
         {
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
 
@@ -507,7 +507,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// request optic link level
         /// </summary>
         /// <returns>optic link level</returns>
-        public async Task<double> RequestOptLinkLvl()
+        public async Task<double> RequestOptLinkLvlAsync()
         {
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
 
@@ -572,7 +572,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// send reset command
         /// </summary>
         /// <returns></returns>
-        public async Task SendResetCmd()
+        public async Task SendResetCmdAsync()
         {
             TaskCompletionSource tcs = new TaskCompletionSource();
 
@@ -622,7 +622,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// </summary>
         /// <param name="on">is set to ON</param>
         /// <returns></returns>
-        public async Task SetTestGenerator(bool on)
+        public async Task SetTestGeneratorAsync(bool on)
         {
             TaskCompletionSource tcs = new TaskCompletionSource();
 
@@ -679,7 +679,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// <param name="isRX">true - for RX, false - TX</param>
         /// <param name="isLowPowerMode">true - low power mode, false - normal power mode</param>
         /// <returns></returns>
-        public async Task SetUnitToLowPower(bool isRX,bool isLowPowerMode)
+        public async Task SetUnitToLowPowerAsync(bool isRX,bool isLowPowerMode)
         {
             TaskCompletionSource tcs = new TaskCompletionSource();
 
@@ -735,7 +735,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// </summary>
         /// <param name="attValue">attenuation value (0dB ... 31.75dB)</param>
         /// <returns></returns>
-        public async Task SetAttenuation(double attValue)
+        public async Task SetAttenuationAsync(double attValue)
         {
             TaskCompletionSource tcs = new TaskCompletionSource();
 
@@ -800,7 +800,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// request "all" device settings (rise command ":ALL?")
         /// </summary>
         /// <returns>attenuation(gain)</returns>
-        public async Task<double> RequestAllSetup()
+        public async Task<double> RequestAllSetupAsync()
         {
             TaskCompletionSource<double> tcs = new TaskCompletionSource<double>();
 

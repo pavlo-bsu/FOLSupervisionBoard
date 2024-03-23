@@ -98,7 +98,7 @@ namespace Pavlo.FOLSupervisionBoard
                     var res = TheMOT2000T.OpenPort();
                     if (res == true)
                     {//i.e. connection to COMport is established
-                        await RefreshData();
+                        await RefreshDataAsync();
                     }
                     else
                     {//i.e. connection to COMport is NOT established
@@ -118,7 +118,7 @@ namespace Pavlo.FOLSupervisionBoard
                         );
                         
                         //and finally reset all UI
-                        await ResetAllUI();
+                        await ResetAllUIAsync();
                     }
                 });
             }
@@ -149,7 +149,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// </summary>
         /// <param name="handleException">handle exception, i.e. show message</param>
         /// <returns></returns>
-        public async Task RequestRXIdentity(bool handleException)
+        public async Task RequestRXIdentityAsync(bool handleException)
         {
             await Application.Current.Dispatcher.BeginInvoke(
                             new Action(() =>
@@ -161,7 +161,7 @@ namespace Pavlo.FOLSupervisionBoard
                             );
             try
             {
-                Task<string> t = TheMOT2000T.RequestRXIdentity();
+                Task<string> t = TheMOT2000T.RequestRXIdentityAsync();
                 await t;
                 var rs = t.Result;
                 await Application.Current.Dispatcher.BeginInvoke(
@@ -218,7 +218,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// </summary>
         /// <param name="handleException">handle exception, i.e. show message</param>
         /// <returns></returns>
-        public async Task RequestRXBatteryVoltage(bool handleException)
+        public async Task RequestRXBatteryVoltageAsync(bool handleException)
         {
             await Application.Current.Dispatcher.BeginInvoke(
                             new Action(() =>
@@ -230,7 +230,7 @@ namespace Pavlo.FOLSupervisionBoard
                             );
             try
             {
-                Task<double> t = TheMOT2000T.RequestRXBatteryVoltage();
+                Task<double> t = TheMOT2000T.RequestRXBatteryVoltageAsync();
                 await t;
                 var rs = t.Result;
                 await Application.Current.Dispatcher.BeginInvoke(
@@ -291,7 +291,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// </summary>
         /// <param name="handleException">handle exception, i.e. show message</param>
         /// <returns>true if TX was connected first time (i.e. new TX identity after not connected TX state)</returns>
-        public async Task<bool> RequestTXIdentity(bool handleException)
+        public async Task<bool> RequestTXIdentityAsync(bool handleException)
         {
             bool isTXfirstTimeConnected = false;
 
@@ -305,7 +305,7 @@ namespace Pavlo.FOLSupervisionBoard
                             );
             try
             {
-                Task<string> t = TheMOT2000T.RequestTXIdentity();
+                Task<string> t = TheMOT2000T.RequestTXIdentityAsync();
                 await t;
                 var ts = t.Result;
 
@@ -370,7 +370,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// </summary>
         /// <param name="handleException">handle exception, i.e. show message</param>
         /// <returns></returns>
-        public async Task RequestTXBatteryVoltage(bool handleException)
+        public async Task RequestTXBatteryVoltageAsync(bool handleException)
         {
             await Application.Current.Dispatcher.BeginInvoke(
                             new Action(() =>
@@ -382,7 +382,7 @@ namespace Pavlo.FOLSupervisionBoard
                             );
             try
             {
-                Task<double> t = TheMOT2000T.RequestTXBatteryVoltage();
+                Task<double> t = TheMOT2000T.RequestTXBatteryVoltageAsync();
                 await t;
                 var txv = t.Result;
                 await Application.Current.Dispatcher.BeginInvoke(
@@ -440,7 +440,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// </summary>
         /// <param name="handleException">handle exception, i.e. show message</param>
         /// <returns></returns>
-        public async Task RequestOptLinkLvl(bool handleException)
+        public async Task RequestOptLinkLvlAsync(bool handleException)
         {
             await Application.Current.Dispatcher.BeginInvoke(
                             new Action(() =>
@@ -452,7 +452,7 @@ namespace Pavlo.FOLSupervisionBoard
                             );
             try
             {
-                Task<double> t = TheMOT2000T.RequestOptLinkLvl();
+                Task<double> t = TheMOT2000T.RequestOptLinkLvlAsync();
                 await t;
                 var lvl = t.Result;
                 await Application.Current.Dispatcher.BeginInvoke(
@@ -659,7 +659,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// Set Name and Voltage of RX, TX, and opt. link level to the default values
         /// </summary>
         /// <returns></returns>
-        private async Task ResetRX_TX_toDefaultValues()
+        private async Task ResetRX_TX_toDefaultValuesAsync()
         {
             await Application.Current.Dispatcher.BeginInvoke(
                            new Action(() =>
@@ -680,9 +680,9 @@ namespace Pavlo.FOLSupervisionBoard
         /// Set all UI elemenets to default values
         /// </summary>
         /// <returns></returns>
-        private async Task ResetAllUI()
+        private async Task ResetAllUIAsync()
         {
-            await ResetRX_TX_toDefaultValues();
+            await ResetRX_TX_toDefaultValuesAsync();
             await Application.Current.Dispatcher.BeginInvoke(
                            new Action(() =>
                            {
@@ -708,32 +708,32 @@ namespace Pavlo.FOLSupervisionBoard
         /// <summary>
         /// Refresh Name and Voltage for RX, TX, and opt. link level.
         /// </summary>
-        public async Task RefreshData()
+        public async Task RefreshDataAsync()
         {
             try
             {
                 //firstly reset to default values
-                await ResetRX_TX_toDefaultValues();
+                await ResetRX_TX_toDefaultValuesAsync();
 
                 //for receiver
-                var t1 = RequestRXIdentity(false);
+                var t1 = RequestRXIdentityAsync(false);
                 await t1;
-                var t2 = RequestRXBatteryVoltage(false);
+                var t2 = RequestRXBatteryVoltageAsync(false);
                 await t2;
 
                 //for transmitter
-                var t3 = RequestTXIdentity(false);
+                var t3 = RequestTXIdentityAsync(false);
                 await t3;
                 if (t3.Result==true)
                 {//i.e. TX was connected first time (new TX identity after state "TX not connected")
-                    var tRequestAttTask = RequestGain();
+                    var tRequestAttTask = RequestGainAsync();
                     await tRequestAttTask;
                 }
-                var t4 = RequestTXBatteryVoltage(false);
+                var t4 = RequestTXBatteryVoltageAsync(false);
                 await t4;
 
                 //for opt.link level
-                var tLvl = RequestOptLinkLvl(false);
+                var tLvl = RequestOptLinkLvlAsync(false);
                 await tLvl;
             }
             catch (Exception e)
@@ -811,7 +811,7 @@ namespace Pavlo.FOLSupervisionBoard
                     {
                         if (value != -1)
                         {
-                            await TheMOT2000T.SetAttenuation(Double.Parse(GainsList[_GainsListSelectedIndex]));
+                            await TheMOT2000T.SetAttenuationAsync(Double.Parse(GainsList[_GainsListSelectedIndex]));
                         }
                     }
                     catch (Exception e)
@@ -832,7 +832,7 @@ namespace Pavlo.FOLSupervisionBoard
                                 );
                         
                         if (error)
-                            Reset();//Fiber optic link should be reset!
+                            ResetAsync();//Fiber optic link should be reset!
                     }
                 });
             }
@@ -846,7 +846,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// Request gain (attenuation)
         /// </summary>
         /// <returns></returns>
-        public async Task RequestGain()
+        public async Task RequestGainAsync()
         {
             await Application.Current.Dispatcher.BeginInvoke(
                             new Action(() =>
@@ -859,7 +859,7 @@ namespace Pavlo.FOLSupervisionBoard
             bool error = false;
             try
             {
-                Task<double> t = TheMOT2000T.RequestAllSetup();
+                Task<double> t = TheMOT2000T.RequestAllSetupAsync();
                 await t;
                 var gain = t.Result;
                 //index of gain in the GainsList
@@ -892,7 +892,7 @@ namespace Pavlo.FOLSupervisionBoard
                             null
                             );
                 if (error)
-                    Reset();//Fiber optic link should be reset!
+                    ResetAsync();//Fiber optic link should be reset!
             }
         }
         #endregion
@@ -901,11 +901,11 @@ namespace Pavlo.FOLSupervisionBoard
         /// <summary>
         /// Reset opt.system and update UI
         /// </summary>
-        public async Task Reset()
+        public async Task ResetAsync()
         {
             try
             {
-                await SendResetCmd();
+                await SendResetCmdAsync();
             }
             catch (Exception e)
             {
@@ -918,17 +918,17 @@ namespace Pavlo.FOLSupervisionBoard
             finally
             {
                 //in any case UI should be reseted
-                await ResetAllUI();
+                await ResetAllUIAsync();
 
                 //then refreshed
-                await RefreshData();
+                await RefreshDataAsync();
             }
         }
 
         /// <summary>
         /// send reset command to the device
         /// </summary>
-        private async Task SendResetCmd()
+        private async Task SendResetCmdAsync()
         {
             await Application.Current.Dispatcher.BeginInvoke(
                             new Action(() =>
@@ -940,7 +940,7 @@ namespace Pavlo.FOLSupervisionBoard
                             );
             try
             {
-                await TheMOT2000T.SendResetCmd();
+                await TheMOT2000T.SendResetCmdAsync();
             }
             finally
             {
@@ -962,7 +962,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// </summary>
         /// <param name="onVal">is set to ON</param>
         /// <returns></returns>
-        private async Task SetTestGenerator(bool onVal)
+        private async Task SetTestGeneratorAsync(bool onVal)
         {
             await Application.Current.Dispatcher.BeginInvoke(
                             new Action(() =>
@@ -974,7 +974,7 @@ namespace Pavlo.FOLSupervisionBoard
                             );
             try
             {
-                await TheMOT2000T.SetTestGenerator(onVal);
+                await TheMOT2000T.SetTestGeneratorAsync(onVal);
             }
             finally
             {
@@ -1012,7 +1012,7 @@ namespace Pavlo.FOLSupervisionBoard
                         bool error=false;
                         try
                         {
-                            await SetTestGenerator(value);
+                            await SetTestGeneratorAsync(value);
                         }
                         catch (Exception e)
                         {
@@ -1032,7 +1032,7 @@ namespace Pavlo.FOLSupervisionBoard
                                );
 
                             if (error)
-                                Reset();//Fiber optic link should be reset!
+                                ResetAsync();//Fiber optic link should be reset!
                         }
                     });
                 }
@@ -1046,7 +1046,7 @@ namespace Pavlo.FOLSupervisionBoard
         /// </summary>
         /// <param name="isLowPowerMode">true - low power mode, false - normal power mode</param>
         /// <returns></returns>
-        private async Task SetUnitsToLowpowerMode(bool isLowPowerMode)
+        private async Task SetUnitsToLowpowerModeAsync(bool isLowPowerMode)
         {
             await Application.Current.Dispatcher.BeginInvoke(
                             new Action(() =>
@@ -1059,9 +1059,9 @@ namespace Pavlo.FOLSupervisionBoard
             try
             {
                 //set TX
-                await TheMOT2000T.SetUnitToLowPower(false, isLowPowerMode);
+                await TheMOT2000T.SetUnitToLowPowerAsync(false, isLowPowerMode);
                 //set RX
-                await TheMOT2000T.SetUnitToLowPower(true, isLowPowerMode);
+                await TheMOT2000T.SetUnitToLowPowerAsync(true, isLowPowerMode);
             }
             finally
             {
@@ -1100,7 +1100,7 @@ namespace Pavlo.FOLSupervisionBoard
                         bool error=false;
                         try
                         {
-                            await SetUnitsToLowpowerMode(value);
+                            await SetUnitsToLowpowerModeAsync(value);
                         }
                         catch (Exception e)
                         {
@@ -1120,7 +1120,7 @@ namespace Pavlo.FOLSupervisionBoard
                                );
 
                             if (error)
-                                Reset();//Fiber optic link should be reset!
+                                ResetAsync();//Fiber optic link should be reset!
                         }
                     });
                 }

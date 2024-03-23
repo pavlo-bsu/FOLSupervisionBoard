@@ -51,7 +51,7 @@ namespace Pavlo.FOLSupervisionBoard.Viemodel
         
         public void Execute(object? parameter)
         {
-            vm?.RefreshData();
+            vm?.RefreshDataAsync();
         }
     }
 }
