@@ -15,6 +15,26 @@ As an example, UML sequence diagram presented in the Figure below shows the sett
 ![Figure 1]( https://raw.githubusercontent.com/pavlo-bsu/FOLSupervisionBoard/backmatter/img/umlSeqSetGain.png)
 
 
+## List of the control commands not published in the device User’s Manual
+During the development, it was find out that the description of the protocol from the MOL2000T User’s Manual is incomplete. The manual does not contain commands that allow you to retrieve data about previously preset settings (that were set during the previous connection or via another software). For example, after connecting MOL2000T to the Montena Control software (Android or Windows version), the software “sees” all the settings that were previously set by another software or the same app during previous connection with MOL2000T.
+
+Therefore, I was faced with the task of finding control commands that were missing in the User’s manual. Everyone who has ever been involved in `reverse engineering` has already guessed what actions I could use, and for the rest there will only be a hint).
+
+__Hint__: I dove deep into the protocol waters, where a certain 'shark' helped me untangle the digital currents during the task.
+
+As a result of the work carried out, the missing commands of communications protocol were found. List of the found commands is given below.
+
+|Command|Description|Example of response|
+|-------------|-------------|----------------------|
+|:RPMEMR0?|Request of Receiver for serial number of paired Transmitter|PAIR-TX06928|
+|:RPMEMT0?|Request of Transmitter for serial number of paired Receiver|PAIR-RX06826|
+|PRE?|Preamplifier state|TX: Preamp OFF|
+|PAT?|State of power attenuator|TX: Power Attenuator ON|
+|ATN?|Attenuation value in tenths of dB, see Montena UM (bear in mind state of power attenuator)|085|
+|ALL?|Request for {RX battery voltage, TX battery voltage, Attenuation value, Input relay state, Preamplifier state, Power attenuator state, optical signal value}|8.01,7.63,085,1,0,0,7|
+
+__N.B.__ I would like to remind you that using commands not explained in official User’s manuals can lead to failure or damage of the device or other equipment. Therefore, using the above commands is at your own risk.
+
 ## Why some data is updated manually (not automatically by timer, event, etc.)
 Update of optical link level, ID and battery voltage of Receiver and Transmitter modules are performed at the user’s command. The same for search of new connected units. These are not done automatically in order to avoid possible loss of the useful physical signal that is currently being transmitted over the fiber: __according to device user manual, disturbance on the analogue link for a few seconds can appear__ while Transmitter and Receiver exchange commands.
 
